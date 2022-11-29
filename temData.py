@@ -1,7 +1,7 @@
 from show import PMS, BMS
-from showDB import ShowDB
 from averageValue import AverageValue
 from comparePm import ComparePm
+from getListDB import GetListDB
 
 import sys
 from PyQt5.QtCore import Qt
@@ -37,8 +37,6 @@ class Main(QDialog):
         self.tempText.setFont(font)
         self.tempText.setStyleSheet('color:black;font-size:24px;')
         self.tempText.setFixedSize(200, 100)
-        self.tempAver = AverageValue(BMS, "temp")
-        self.tempText.setText("온도 : " + str(self.tempAver.AverValue()))
 
         self.humiText = QLineEdit()
         self.humiText.setReadOnly(True)
@@ -48,8 +46,6 @@ class Main(QDialog):
         self.humiText.setFont(font)
         self.humiText.setStyleSheet('color:black;font-size:24px;')
         self.humiText.setFixedSize(200, 100)
-        self.humiAver = AverageValue(BMS, "humi")
-        self.humiText.setText("습도 : " + str(self.humiAver.AverValue()))
 
         self.nowPmText = QTextEdit()
         self.nowPmText.setReadOnly(True)
@@ -68,6 +64,7 @@ class Main(QDialog):
         self.pmText.setFont(font)
         self.pmText.setStyleSheet('color:black;font-size:18px;')
         self.pmText.setFixedSize(200, 200)
+
         self.textPM()
 
         pm10Button = QPushButton('PM10')
@@ -98,7 +95,6 @@ class Main(QDialog):
         mainLayout.addLayout(leftLayout)
         mainLayout.addLayout(rightLayout)
 
-
         self.setLayout(mainLayout)
         self.show()
 
@@ -113,7 +109,7 @@ class Main(QDialog):
         self.textPM()
 
     def draw_graph(self):
-        getListDB = GetListDB()
+        getListDB = GetListDB(PMS)
         self.sc.axes.cla()
         self.sc.axes.plot(getListDB.sortedListDB_X(self.key), getListDB.sortedListDB_Y(self.key))
         self.sc.axes.set_xlabel("ID")
@@ -122,37 +118,18 @@ class Main(QDialog):
         self.sc.draw()
 
     def textPM(self):
+        self.tempAver = AverageValue(BMS, "temp")
+        self.humiAver = AverageValue(BMS, "humi")
         self.pmAver = AverageValue(PMS, self.key)
         self.comPM = ComparePm(self.pmAver.lastValue(), self.key)
+
+        self.tempText.setText("온도 : " + str(self.tempAver.AverValue()))
+        self.humiText.setText("습도 : " + str(self.humiAver.AverValue()))
         self.nowPmText.setText("현재 미세먼지 농도는 \n" + self.comPM.ComparePM() + "(" + str(self.pmAver.lastValue()) + ") 입니다.")
         if self.key == "pm10" :
             self.pmText.setText("<PM10>\n좋음 : 0 ~ 30 \n보톰 : 31 ~ 80\n나쁨 : 81 ~ 150\n매우 나쁨 : 151이상")
         elif self.key == "pm25" :
             self.pmText.setText("<PM2.5>\n좋음 : 0 ~ 15 \n보톰 : 15 ~ 35\n나쁨 : 36 ~ 75\n매우 나쁨 : 76이상")
-
-class GetListDB():
-    def __init__(self):
-        self.listDB = PMS
-
-    def sortedListDB_X(self, key):
-        self.getList_X = []
-        showDB = ShowDB(self.listDB, key)
-        showDB.InputSortList()
-        d = showDB.getSortList()
-        for i in range(len(d)):
-            self.getList_X.append(float(i+1))
-
-        return self.getList_X
-
-    def sortedListDB_Y(self, key):
-        self.getList_Y = []
-        showDB = ShowDB(self.listDB, key)
-        showDB.InputSortList()
-        d = showDB.getSortList()
-        for i in range(len(d)):
-            self.getList_Y.append(float(d[i]))
-
-        return self.getList_Y
 
 
 if __name__=="__main__" :
