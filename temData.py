@@ -20,11 +20,13 @@ class MplCanvas(FigureCanvasQTAgg):
 class Main(QDialog):
     def __init__(self):
         super().__init__()
+        self.key = "pm10"
+
         self.init_ui()
 
     def init_ui(self):
         self.sc = MplCanvas()
-        self.draw_graph_pm10()
+        self.draw_graph()
         toolbar = NavigationToolbar(self.sc, self)
 
         self.tempText = QLineEdit()
@@ -33,7 +35,7 @@ class Main(QDialog):
         font = self.tempText.font()
         font.setFamily('Courier New')
         self.tempText.setFont(font)
-        self.tempText.setStyleSheet('color:black;font-size:18px;')
+        self.tempText.setStyleSheet('color:black;font-size:24px;')
         self.tempText.setFixedSize(200, 100)
         self.tempAver = AverageValue(BMS, "temp")
         self.tempText.setText("온도 : " + str(self.tempAver.AverValue()))
@@ -44,7 +46,7 @@ class Main(QDialog):
         font = self.humiText.font()
         font.setFamily('Courier New')
         self.humiText.setFont(font)
-        self.humiText.setStyleSheet('color:black;font-size:18px;')
+        self.humiText.setStyleSheet('color:black;font-size:24px;')
         self.humiText.setFixedSize(200, 100)
         self.humiAver = AverageValue(BMS, "humi")
         self.humiText.setText("습도 : " + str(self.humiAver.AverValue()))
@@ -57,9 +59,6 @@ class Main(QDialog):
         self.nowPmText.setFont(font)
         self.nowPmText.setStyleSheet('color:black;font-size:18px;')
         self.nowPmText.setFixedSize(200, 100)
-        self.pmAver = AverageValue(PMS, "pm10")
-        self.comPM = ComparePm(self.pmAver.lastValue(), "pm10")
-        self.nowPmText.setText("현재 미세먼지 농도는 \n" + self.comPM.ComparePM() + "(" +str(self.pmAver.lastValue()) + ") 입니다.")
 
         self.pmText = QTextEdit()
         self.pmText.setReadOnly(True)
@@ -69,14 +68,12 @@ class Main(QDialog):
         self.pmText.setFont(font)
         self.pmText.setStyleSheet('color:black;font-size:18px;')
         self.pmText.setFixedSize(200, 200)
-        self.pmText.setText("<PM10>\n좋음 : 0 ~ 30 \n보톰 : 31 ~ 80\n나쁨 : 81 ~ 150\n매우 나쁨 : 151이상")
+        self.textPM()
 
         pm10Button = QPushButton('PM10')
-        pm10Button.clicked.connect(self.draw_graph_pm10)
-        pm10Button.clicked.connect(self.text_pm10)
+        pm10Button.clicked.connect(self.push_button_pm10)
         pm25Button = QPushButton('PM25')
-        pm25Button.clicked.connect(self.draw_graph_pm25)
-        pm25Button.clicked.connect(self.text_pm25)
+        pm25Button.clicked.connect(self.push_button_pm25)
 
         hBoxButton = QHBoxLayout()
         hBoxButton.addStretch(2)
@@ -105,39 +102,33 @@ class Main(QDialog):
         self.setLayout(mainLayout)
         self.show()
 
-    def draw_graph_pm10(self):
+    def push_button_pm10(self):
+        self.key = "pm10"
+        self.draw_graph()
+        self.textPM()
+
+    def push_button_pm25(self):
+        self.key = "pm25"
+        self.draw_graph()
+        self.textPM()
+
+    def draw_graph(self):
         getListDB = GetListDB()
-        key = 'pm10'
         self.sc.axes.cla()
-        self.sc.axes.plot(getListDB.sortedListDB_X(key), getListDB.sortedListDB_Y(key))
+        self.sc.axes.plot(getListDB.sortedListDB_X(self.key), getListDB.sortedListDB_Y(self.key))
         self.sc.axes.set_xlabel("ID")
-        self.sc.axes.set_ylabel(key)
+        self.sc.axes.set_ylabel(self.key)
         self.sc.axes.grid()
         self.sc.draw()
 
-    def draw_graph_pm25(self):
-        getListDB = GetListDB()
-        key = 'pm25'
-        self.sc.axes.cla()
-        self.sc.axes.plot(getListDB.sortedListDB_X(key), getListDB.sortedListDB_Y(key))
-        self.sc.axes.set_xlabel("ID")
-        self.sc.axes.set_ylabel(key)
-        self.sc.axes.grid()
-        self.sc.draw()
-
-    def text_pm10(self):
-        key = "pm10"
-        self.pmAver = AverageValue(PMS, key)
-        self.comPM = ComparePm(self.pmAver.lastValue(), key)
+    def textPM(self):
+        self.pmAver = AverageValue(PMS, self.key)
+        self.comPM = ComparePm(self.pmAver.lastValue(), self.key)
         self.nowPmText.setText("현재 미세먼지 농도는 \n" + self.comPM.ComparePM() + "(" + str(self.pmAver.lastValue()) + ") 입니다.")
-        self.pmText.setText("<PM10>\n좋음 : 0 ~ 30 \n보톰 : 31 ~ 80\n나쁨 : 81 ~ 150\n매우 나쁨 : 151이상")
-
-    def text_pm25(self):
-        key = "pm25"
-        self.pmAver = AverageValue(PMS, key)
-        self.comPM = ComparePm(self.pmAver.lastValue(), key)
-        self.nowPmText.setText("현재 미세먼지 농도는 \n" + self.comPM.ComparePM() + "(" + str(self.pmAver.lastValue()) + ") 입니다.")
-        self.pmText.setText("<PM2.5>\n좋음 : 0 ~ 15 \n보톰 : 15 ~ 35\n나쁨 : 36 ~ 75\n매우 나쁨 : 76이상")
+        if self.key == "pm10" :
+            self.pmText.setText("<PM10>\n좋음 : 0 ~ 30 \n보톰 : 31 ~ 80\n나쁨 : 81 ~ 150\n매우 나쁨 : 151이상")
+        elif self.key == "pm25" :
+            self.pmText.setText("<PM2.5>\n좋음 : 0 ~ 15 \n보톰 : 15 ~ 35\n나쁨 : 36 ~ 75\n매우 나쁨 : 76이상")
 
 class GetListDB():
     def __init__(self):
