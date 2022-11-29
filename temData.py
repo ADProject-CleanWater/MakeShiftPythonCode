@@ -10,6 +10,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 
+#데이터를 실시간으로 적용
 
 class MplCanvas(FigureCanvasQTAgg):
     def __init__(self):
@@ -95,6 +96,10 @@ class Main(QDialog):
         mainLayout.addLayout(leftLayout)
         mainLayout.addLayout(rightLayout)
 
+        self.timer = self.sc.new_timer(
+            1000, [(self.update_Data, (), {})])
+        self.timer.start()
+
         self.setLayout(mainLayout)
         self.show()
 
@@ -131,6 +136,9 @@ class Main(QDialog):
         elif self.key == "pm25" :
             self.pmText.setText("<PM2.5>\n좋음 : 0 ~ 15 \n보톰 : 15 ~ 35\n나쁨 : 36 ~ 75\n매우 나쁨 : 76이상")
 
+    def update_Data(self):
+        self.textPM()
+        self.draw_graph()
 
 if __name__=="__main__" :
    app = QApplication(sys.argv)
