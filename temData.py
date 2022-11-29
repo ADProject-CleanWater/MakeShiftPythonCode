@@ -1,4 +1,4 @@
-from show import PMS, BMS
+import show
 from averageValue import AverageValue
 from comparePm import ComparePm
 from getListDB import GetListDB
@@ -9,6 +9,8 @@ from PyQt5.QtWidgets import *
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
+
+import importlib
 
 #데이터를 실시간으로 적용
 
@@ -114,7 +116,7 @@ class Main(QDialog):
         self.textPM()
 
     def draw_graph(self):
-        getListDB = GetListDB(PMS)
+        getListDB = GetListDB(show.PMS)
         self.sc.axes.cla()
         self.sc.axes.plot(getListDB.sortedListDB_X(self.key), getListDB.sortedListDB_Y(self.key))
         self.sc.axes.set_xlabel("ID")
@@ -123,9 +125,9 @@ class Main(QDialog):
         self.sc.draw()
 
     def textPM(self):
-        self.tempAver = AverageValue(BMS, "temp")
-        self.humiAver = AverageValue(BMS, "humi")
-        self.pmAver = AverageValue(PMS, self.key)
+        self.tempAver = AverageValue(show.BMS, "temp")
+        self.humiAver = AverageValue(show.BMS, "humi")
+        self.pmAver = AverageValue(show.PMS, self.key)
         self.comPM = ComparePm(self.pmAver.lastValue(), self.key)
 
         self.tempText.setText("온도 : " + str(self.tempAver.AverValue()))
@@ -137,6 +139,7 @@ class Main(QDialog):
             self.pmText.setText("<PM2.5>\n좋음 : 0 ~ 15 \n보톰 : 15 ~ 35\n나쁨 : 36 ~ 75\n매우 나쁨 : 76이상")
 
     def update_Data(self):
+        importlib.reload(show)
         self.textPM()
         self.draw_graph()
 
