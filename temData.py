@@ -13,6 +13,7 @@ from matplotlib.figure import Figure
 import importlib
 
 #데이터를 실시간으로 적용
+#년별 매월 그래프 구현 2008~2021 온도 비교
 
 class MplCanvas(FigureCanvasQTAgg):
     def __init__(self):
@@ -38,8 +39,8 @@ class Main(QDialog):
         font = self.tempText.font()
         font.setFamily('Courier New')
         self.tempText.setFont(font)
-        self.tempText.setStyleSheet('color:black;font-size:24px;')
-        self.tempText.setFixedSize(200, 100)
+        self.tempText.setStyleSheet('color:black;font-size:28px;')
+        self.tempText.setFixedSize(250, 100)
 
         self.humiText = QLineEdit()
         self.humiText.setReadOnly(True)
@@ -47,8 +48,8 @@ class Main(QDialog):
         font = self.humiText.font()
         font.setFamily('Courier New')
         self.humiText.setFont(font)
-        self.humiText.setStyleSheet('color:black;font-size:24px;')
-        self.humiText.setFixedSize(200, 100)
+        self.humiText.setStyleSheet('color:black;font-size:28px;')
+        self.humiText.setFixedSize(250, 100)
 
         self.nowPmText = QTextEdit()
         self.nowPmText.setReadOnly(True)
@@ -56,8 +57,8 @@ class Main(QDialog):
         font = self.nowPmText.font()
         font.setFamily('Courier New')
         self.nowPmText.setFont(font)
-        self.nowPmText.setStyleSheet('color:black;font-size:18px;')
-        self.nowPmText.setFixedSize(200, 100)
+        self.nowPmText.setStyleSheet('color:black;font-size:20px;')
+        self.nowPmText.setFixedSize(250, 100)
 
         self.pmText = QTextEdit()
         self.pmText.setReadOnly(True)
@@ -65,8 +66,8 @@ class Main(QDialog):
         font = self.pmText.font()
         font.setFamily('Courier New')
         self.pmText.setFont(font)
-        self.pmText.setStyleSheet('color:black;font-size:18px;')
-        self.pmText.setFixedSize(200, 200)
+        self.pmText.setStyleSheet('color:black;font-size:20px;')
+        self.pmText.setFixedSize(250, 200)
 
         self.textPM()
 
@@ -74,11 +75,14 @@ class Main(QDialog):
         pm10Button.clicked.connect(self.push_button_pm10)
         pm25Button = QPushButton('PM25')
         pm25Button.clicked.connect(self.push_button_pm25)
+        comTempButton = QPushButton('Temp')
+        comTempButton.clicked.connect(self.push_button_compareTemp)
 
         hBoxButton = QHBoxLayout()
         hBoxButton.addStretch(2)
         hBoxButton.addWidget(pm10Button)
         hBoxButton.addWidget(pm25Button)
+        hBoxButton.addWidget(comTempButton)
 
         leftLayout = QVBoxLayout()
         leftLayout.addWidget(toolbar)
@@ -137,6 +141,9 @@ class Main(QDialog):
             self.pmText.setText("<PM10>\n좋음 : 0 ~ 30 \n보톰 : 31 ~ 80\n나쁨 : 81 ~ 150\n매우 나쁨 : 151이상")
         elif self.key == "pm25" :
             self.pmText.setText("<PM2.5>\n좋음 : 0 ~ 15 \n보톰 : 15 ~ 35\n나쁨 : 36 ~ 75\n매우 나쁨 : 76이상")
+
+    def push_button_compareTemp(self):
+        print("PUSH")
 
     def update_Data(self):
         importlib.reload(show)
