@@ -125,8 +125,8 @@ class Main(QDialog):
         self.sc.draw()
 
     def textPM(self):
-        self.tempAver = AverageValue(show.BMS, "temp")
-        self.humiAver = AverageValue(show.BMS, "humi")
+        self.tempAver = AverageValue(show.BME, "temp")
+        self.humiAver = AverageValue(show.BME, "humi")
         self.pmAver = AverageValue(show.PMS, self.key)
         self.comPM = ComparePm(self.pmAver.lastValue(), self.key)
 

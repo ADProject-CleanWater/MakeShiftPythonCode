@@ -33,7 +33,7 @@ print(PMS)
 # ]
 
 
-BMS = [
+BME = [
     {'temp': '2', 'humi': '1'},
     {'temp': '3', 'humi': '2'},
     {'temp': '4', 'humi': '3'},
