@@ -103,7 +103,7 @@ class Main(QDialog):
         mainLayout.addLayout(rightLayout)
 
         self.timer = self.sc.new_timer(
-            1000, [(self.update_Data, (), {})])
+            100, [(self.update_Data, (), {})])
         self.timer.start()
 
         self.setLayout(mainLayout)
