@@ -1,4 +1,3 @@
-
 class ComparePm():
     def __init__(self, data, key):
         self.data = data

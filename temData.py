@@ -164,9 +164,6 @@ class Main(QDialog):
             self.sc.axes.grid()
             self.sc.draw()
 
-    def draw_graph_temp(self):
-        pass
-
     def textPM(self):
         self.tempAver = AverageValue(show.BME, "temp")
         self.humiAver = AverageValue(show.BME, "humi")

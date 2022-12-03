@@ -14,4 +14,3 @@ class ShowDB():
     def getSortList(self):
         return self.sortList
 
-
