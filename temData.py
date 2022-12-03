@@ -152,11 +152,11 @@ class Main(QDialog):
         if self.comPM.ComparePM() == "좋음":
             image_update = "air_01.jpg"
         elif self.comPM.ComparePM() == "보통":
-            impage_update = "air_02.jpg"
+            image_update = "air_02.jpg"
         elif self.comPM.ComparePM() == "나쁨":
-            impage_update = "air_03.jpg"
+            image_update = "air_03.jpg"
         elif self.comPM.ComparePM() == "매우 나쁨":
-            impage_update = "air_04.jpg"
+            image_update = "air_04.jpg"
             
         self.image.setPixmap(QPixmap(image_update))
 
