@@ -14,4 +14,4 @@ class ComparePm():
             if self.data < 15 : return "좋음"
             elif self.data < 35 : return "보통"
             elif self.data < 75 : return "나쁨"
-            else : return "메우 나쁨"
+            else : return "매우 나쁨"
