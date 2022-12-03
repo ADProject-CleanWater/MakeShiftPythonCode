@@ -1,8 +1,14 @@
 from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
 
-myclient = MongoClient("mongodb://3.34.50.139:27017/", 27017)
+load_dotenv()
 
-db = myclient["testsensor"]
+MongoURI = os.environ.get("MongoURI")
+
+myclient = MongoClient(MongoURI, 27017)
+
+db = myclient["AD"]
 pms = db["pms"]
 bme = db["bme"] 
 
