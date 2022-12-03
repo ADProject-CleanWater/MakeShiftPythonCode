@@ -67,7 +67,11 @@ class Main(QDialog):
         font.setFamily('Courier New')
         self.pmText.setFont(font)
         self.pmText.setStyleSheet('color:black;font-size:20px;')
-        self.pmText.setFixedSize(250, 200)
+        self.pmText.setFixedSize(250, 150)
+        
+        self.image = QLabel()
+        self.image.setAlignment(Qt.AlignRight)
+        self.image.setFixedSize(250, 250)
 
         self.textPM()
 
@@ -96,6 +100,8 @@ class Main(QDialog):
         rightLayout.addWidget(self.nowPmText)
         rightLayout.addStretch(1)
         rightLayout.addWidget(self.pmText)
+        rightLayout.addStretch(1)
+        rightLayout.addWidget(self.image)
         rightLayout.addLayout(hBoxButton)
 
         mainLayout = QHBoxLayout()
@@ -141,6 +147,17 @@ class Main(QDialog):
             self.pmText.setText("<PM10>\n좋음 : 0 ~ 30 \n보톰 : 31 ~ 80\n나쁨 : 81 ~ 150\n매우 나쁨 : 151이상")
         elif self.key == "pm25" :
             self.pmText.setText("<PM2.5>\n좋음 : 0 ~ 15 \n보톰 : 15 ~ 35\n나쁨 : 36 ~ 75\n매우 나쁨 : 76이상")
+            
+        if self.comPM.ComparePM() == "좋음":
+            image_update = "air_01.jpg"
+        elif self.comPM.ComparePM() == "보통":
+            impage_update = "air_02.jpg"
+        elif self.comPM.ComparePM() == "나쁨":
+            impage_update = "air_03.jpg"
+        elif self.comPM.ComparePM() == "매우 나쁨":
+            impage_update = "air_04.jpg"
+            
+        self.image.setPixmap(QPixmap(image_update))
 
     def push_button_compareTemp(self):
         print("PUSH")
