@@ -37,39 +37,40 @@ gap = (end_date_time - begin_date_time)*24
 print(gap.days)
 
 #측정기간 월별 평균 조회
-m=1
-day=1
-pm10=0
-pm25=0
-pm10_avg=0.0
-pm25_avg =0.0
-PMS2=[]
-for d, cnt in zip(db.pms.find(), range(gap.days)):
-    s = datetime.strptime(d['date'],'%Y-%m-%d %H:%M')
+m = 1
+day = 1
+temp = 0
+humi = 0
+temp_avg = 0.0
+humi_avg = 0.0
+BME = []
+for d, cnt in zip(db.bme.find(), range(gap.days)):
+    s = datetime.strptime(d['date'], '%Y-%m-%d %H:%M')
 
-    if m==13:
-        m=1
+    if m == 13:
+        m = 1
 
-    if s.hour == 12 and s.month==m:
-        pm10 = pm10 + int(d['pm10'])
-        pm25 = pm25 + int(d['pm25'])
-        day=day+1
+    if s.hour == 12 and s.month == m:
+        if d['temp'][0] == '-':
+            temp = temp + (-1) * float(d['temp'][1:])
+        else:
+            temp = temp + float(d['temp'])
+        humi = humi + int(d['humi'])
+        day += 1
+    elif (day >= 28):
+        m = m + 1
+        temp_avg = round((float(temp) / day),3)
+        humi_avg = round((float(humi) / day),3)
+        ls2 = {"개월": m - 1, "temp 평균": temp_avg, "humi 평균": humi_avg}
+        BME.append(ls2)
+        day = 1
 
+        temp = 0
+        humi = 0
+        temp_avg = 0.0
+        humi_avg = 0.0
+print(BME)
 
-    elif(day>=28):
-        m=m+1
-        pm10_avg = float(pm10)/day
-        pm25_avg = float(pm25)/day
-        ls2 = {"개월": m-1, "pm10 평균": pm10_avg, "pm25 평균": pm25_avg}
-        PMS2.append(ls2)
-        day=1
-
-        pm10 = 0
-        pm25 = 0
-        pm10_avg = 0.0
-        pm25_avg = 0.0
-
-print(PMS2)
 
 
 
@@ -90,16 +91,16 @@ print(PMS2)
 # ]
 
 
-BME = [
-    {'temp': '2', 'humi': '1'},
-    {'temp': '3', 'humi': '2'},
-    {'temp': '4', 'humi': '3'},
-    {'temp': '5', 'humi': '3'},
-    {'temp': '6', 'humi': '3'},
-    {'temp': '7', 'humi': '3'},
-    {'temp': '7', 'humi': '3'},
-    {'temp': '7', 'humi': '3'},
-    {'temp': '7', 'humi': '3'},
-    {'temp': '7', 'humi': '3'},
-    {'temp': '7', 'humi': '3'}
-]
+#BME = [
+#    {'temp': '2', 'humi': '1'},
+#    {'temp': '3', 'humi': '2'},
+#    {'temp': '4', 'humi': '3'},
+#    {'temp': '5', 'humi': '3'},
+#    {'temp': '6', 'humi': '3'},
+#    {'temp': '7', 'humi': '3'},
+#    {'temp': '7', 'humi': '3'},
+#    {'temp': '7', 'humi': '3'},
+#    {'temp': '7', 'humi': '3'},
+#    {'temp': '7', 'humi': '3'},
+#    {'temp': '7', 'humi': '3'}
+# ]
