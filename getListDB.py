@@ -28,7 +28,7 @@ class GetListDB():
         return self.getList_X
 
     def sortedListDB_Y(self, key):
-        if key == 'pm10 평균' or key == 'pm25 평균':
+        if key == 'temp 평균' or key == 'humi 평균':
             self.getList_Y = []
             showDB = ShowDB(self.listDB, key)
             showDB.InputSortList()
