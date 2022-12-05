@@ -8,6 +8,8 @@ class GetListDB():
     def getValue(self, value):
         self.value = value
 
+        return value
+
     def sortedListDB_X(self, key):
         if key == '개월':
             self.getList_X = []
